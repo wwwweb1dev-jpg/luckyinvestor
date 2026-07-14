@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script src="https://js.paystack.co/v1/inline.js"></script>
+<title>DevOrg Trading</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial, sans-serif;
+}
+
+body{
+    background:#f5f5f5;
+    color:#333;
+}
+
+header{
+    background:#0d47a1;
+    color:white;
+    padding:20px;
+    text-align:center;
+}
+
+nav{
+    margin-top:15px;
+}
+
+nav a{
+    color:white;
+    margin:0 15px;
+    text-decoration:none;
+}
+
+.hero{
+    height:500px;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    flex-direction:column;
+    background:linear-gradient(rgba(0,0,0,.5),rgba(0,0,0,.5)),
+    url("https://images.unsplash.com/photo-1559526324-593bc073d938?auto=format&fit=crop&w=1500&q=80");
+    background-size:cover;
+    color:white;
+    text-align:center;
+}
+
+.hero h1{
+    font-size:50px;
+}
+
+.hero p{
+    margin:20px;
+    font-size:20px;
+}
+
+.btn{
+    background:#00c853;
+    color:white;
+    padding:15px 30px;
+    text-decoration:none;
+    border-radius:5px;
+}
+
+section{
+    padding:60px 10%;
+}
+
+.cards{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+    gap:20px;
+}
+
+.card{
+    background:white;
+    padding:20px;
+    border-radius:10px;
+    text-align:center;
+    box-shadow:0 5px 15px rgba(0,0,0,.1);
+}
+
+.card h3{
+    color:#0d47a1;
+}
+
+.card button{
+    margin-top:15px;
+    padding:12px 25px;
+    background:#0d47a1;
+    color:white;
+    border:none;
+    cursor:pointer;
+    border-radius:5px;
+}
+
+form{
+    display:flex;
+    flex-direction:column;
+    gap:15px;
+}
+
+input, textarea{
+    padding:15px;
+    border:1px solid #ccc;
+    border-radius:5px;
+}
+
+form button{
+    background:#00c853;
+    color:white;
+    padding:15px;
+    border:none;
+}
+
+footer{
+    background:#222;
+    color:white;
+    text-align:center;
+    padding:20px;
+}
+</style>
+
+</head>
+
+<body>
+
+<header>
+
+<h1>DevOrg Trading</h1>
+
+<nav>
+<a href="#">Home</a>
+<a href="#about">About</a>
+<a href="#plans">Investment Plans</a>
+<a href="#contact">Contact</a>
+</nav>
+
+</header>
+
+<div class="hero">
+
+<h1>Grow Your Wealth With Smart Trading</h1>
+
+<p>Professional Trading • Investment Opportunities • Secure Platform</p>
+
+<a class="btn" href="#plans">Start Investing</a>
+
+</div>
+
+<section id="about">
+
+<h2>About Us</h2>
+
+<br>
+
+<p>
+DevOrg Trading helps investors participate in financial markets through
+professional trading strategies and risk management.
+Our mission is to provide transparent investment opportunities while educating
+our clients.
+</p>
+
+</section>
+
+<section id="plans">
+
+<h2>Investment Plans</h2>
+
+<br>
+
+<div class="cards">
+
+<div class="card">
+    <h3>Starter</h3>
+    <h2>GH₵ 100</h2>
+    <p>Designed for beginners.</p>
+    <button onclick="payWithPaystack(100, 'Starter Plan')">Invest</button>
+</div>
+
+<div class="card">
+    <h3>Professional</h3>
+    <h2>GH₵ 500</h2>
+    <p>Higher investment allocation.</p>
+    <button onclick="payWithPaystack(500, 'Professional Plan')">Invest</button>
+</div>
+
+<div class="card">
+    <h3>VIP</h3>
+    <h2>GH₵ 1000</h2>
+    <p>Premium investment access.</p>
+    <button onclick="payWithPaystack(1000, 'VIP Plan')">Invest</button>
+</div>
+
+</div>
+
+</section>
+
+<section id="contact">
+
+<h2>Contact Us</h2>
+
+<br>
+
+<form>
+
+<input type="text" placeholder="Your Name" required>
+
+<input type="email" placeholder="Email Address" required>
+
+<textarea rows="6" placeholder="Message"></textarea>
+
+<button type="submit">Send Message</button>
+
+</form>
+
+</section>
+
+<footer>
+
+<p>© 2026 DevOrg Trading. All Rights Reserved.</p>
+
+</footer>
+
+<script>
+function payWithPaystack(amount, planName) {
+    const userEmail = prompt("Please enter your email address to continue with the " + planName + ":");
+    
+    if (!userEmail) {
+        alert("Email is required to process the investment.");
+        return;
+    }
+
+    let handler = PaystackPop.setup({
+        key: 'sk_live_9955d77bdff3312b42cce9d847b3cd77a8cee446', 
+        email: userEmail,
+        // Multiply by 100 to convert Cedis to Pesewas
+        amount: amount * 100, 
+        currency: 'GHS', // Updated to Ghanaian Cedis
+        ref: 'TRX_' + Math.floor((Math.random() * 1000000000) + 1),
+        
+        metadata: {
+            custom_fields: [
+                {
+                    display_name: "Plan Selected",
+                    variable_name: "plan_selected",
+                    value: planName
+                }
+            ]
+        },
+
+        callback: function(response) {
+            alert('Success! Transaction Reference: ' + response.reference + '\n\nWelcome to the ' + planName + '!');
+        },
+
+        onClose: function() {
+            alert('Transaction window closed. You have not been charged.');
+        }
+    });
+
+    handler.openIframe();
+}
+</script>
+
+</body>
+</html>
